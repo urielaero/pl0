@@ -1,0 +1,24 @@
+const m = 7, otro = 85;
+var x, y, z, q, r;
+
+procedure multiply;
+  var a,b;
+begin 
+    a := +1;
+    b := (2+1*2);
+    c := 1;
+end;
+
+procedure gcd;
+  var f,g;
+begin	f := x; g := y;
+	while f <> g do
+	begin	if f < g then g := g - f;
+		if g < f then f := f - g;
+	end;
+	z := f
+end;
+
+begin
+	x :=  m; y :=  n;
+end.
