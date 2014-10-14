@@ -2,21 +2,6 @@
 import sys
 from scanner import scanner
 
-#TODO ver que pedo con el arbol
-class Nodo(object):
-    def __init__(self,objActual):
-        self.nombre = objActual.nombre()
-        self.token = objActual.token.token
-
-    def agregarHijo(self,padre,nodo):
-        nodo.pi = padre
-        self.ramas = []
-
-    def agregarSiguiente(self,nodo):
-        nodo.ramas.append(nodo)
-        
-    
-
 class Token(object):
     def __init__(self,nombreArchivo):
         self.tokens = scanner(nombreArchivo)
@@ -52,6 +37,7 @@ class Token(object):
         #uno antes para indicar
         token = self.tokens[self.index-1]
         token.infoError("se esperaba "+debe+" se encontro "+self.token.tipo)
+	exit(1)
 
     def objeto(self):
         return self.token
@@ -66,7 +52,6 @@ class Parser(object):
             self.nodo = []
 
     def parse(self):
-        self.token.nodo = Nodo(self)
         p = Program(self.token)
         if p.parse():
             self.nodo.append(p)
@@ -297,112 +282,6 @@ class Instruccion(Parser):
         else:
             self.token.makeError('[Instruccion]')
         return False
-
-#TODO quitar
-class Statement(Parser):
-    def parse(self):
-        self.token.permitirSiguiente()
-        t = self.token.siguiente()
-        if t == 'token_id' and res:
-            self.token.permitirSiguiente()
-            t = self.token.siguiente()
-            if t == 'token_asignacion':
-                expresion = Expresion(self.token)
-                res = expresion.parse()
-                self.token.permitirSiguiente()
-                t = self.token.siguiente()
-                if t == 'token_punto_coma':
-                    pass
-                    #este lo gestiona el de begin []
-                    #return res
-                else:
-                    self.token.makeError(';')
-                    res = False
-                #return res
-            else:
-                self.token.makeError('":="')
-                return False
-        
-        if t == 'token_call' and res:
-            self.token.permitirSiguiente()
-            t = self.token.siguiente()
-            if t == 'token_id':
-                self.token.permitirSiguiente()
-                t = self.token.siguiente()
-                #return True
-            else:
-                self.token.makeError('id')
-        
-        if t == 'token_begin' and res:
-            res2 = True
-            while res and res2:
-
-                masStatement = Statement(self.token)
-                res =  masStatement.parse()
-
-                self.token.permitirSiguiente()
-                t = self.token.siguiente()
-
-                if res and t != 'token_end' and t == 'token_punto_coma':
-                    self.token.permitirSiguiente()
-                    t = self.token.siguiente()
-                elif t == 'token_end':
-                    self.permitirSiguiente()
-                    t = self.token.siguiente()
-                    res2 = False #termina bucle
-                else:
-                    self.token.makeError('end o ";"')
-                    return False
-            if not res:
-                return False
-        
-        if t == 'token_if' and res:
-            condicion = Condicion(self.token)
-            res = condicion.parse()
-            if res:
-                self.token.permitirSiguiente()
-                t = self.token.siguiente()
-                if t == 'token_then':
-                    masStatement = Statement(self.token)
-                    res = masStatement.parse()
-                    self.token.permitirSiguiente()
-                    t = self.token.siguiente()
-                    #return res
-                else:
-                    self.token.makeError('then')
-                    return False
-        
-        if t == 'token_while' and res:
-            condicion = Condicion(self.token)
-            res = condicion.parse()
-            if res:
-                self.token.permitirSiguiente()
-                t = self.token.siguiente()
-                if t == 'token_do':
-                    masStatement = Statement(self.token)
-                    res = masStatement.parse()
-                    if res:
-                        self.token.permitirSiguiente()
-                        t = self.token.siguiente()
-                    #return res
-                else:
-                    self.token.makeError('do')
-                    return False
-            else:
-                return False
-
-        if res and t in [
-                            'token_id',
-                            'token_call',
-                            'token_begin',
-                            'token_if',
-                            'token_while',
-                        ]:
-            masStatement = Statement(self.token)
-            res = masStatement.parse()
-            
-        else:
-            return res
 
 class Condicion(Parser):
     def parse(self):
