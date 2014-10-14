@@ -1,3 +1,4 @@
+```
 const m = 7, otro = 85;
 var x, y, z, q, r;
 
@@ -151,3 +152,4 @@ Program
      |      |      |      +----- Term
      |      |      |      |      +----- Factor
      |      |      |      |      |      +----- token_id  'n'
+```
