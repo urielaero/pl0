@@ -271,6 +271,8 @@ class Estados(object):
                                 tokens.append(tipoToken)
                             elif tipoToken.error:
                                 return False
+                            
+                            continue
                 if tipoToken.tipo == "token_":
                     print "no reconocido ",t
                     t = self.clasificaToken("Error")
@@ -349,7 +351,7 @@ class Estados(object):
             t = self.fuente.token
 
         self.fuente.countT -= 1
-        return self.clasificaToken("numero")
+        return self.return2estado1("numero",False)
                 
     def return2estado1(self,nombreToken,clear=True):
         if len(self.fuente.val) and clear:
@@ -359,6 +361,7 @@ class Estados(object):
             self.fuente.countT -= 1
         else:
             #si no avanzas por que es solo 1 como estado55
+            self.fuente.val = self.fuente.val.strip()
             tmp = self.clasificaToken(nombreToken)
         self.fuente.val = ""
         return tmp
@@ -625,7 +628,7 @@ class Estados(object):
         self.fuente.nextToken()
         t = self.fuente.token
         if t == '=':
-           return self.clasificaToken('asignacion')
+           return self.return2estado1('asignacion',False)
         return self.return2estado1('dos_puntos',True)
 
     def estado51(self):
@@ -634,10 +637,10 @@ class Estados(object):
         if self.fuente.token == "<":
             return self.estado52()
         elif self.fuente.token == "=":
-            return self.clasificaToken('menor_igual')
+            return self.return2estado1('menor_igual',False)
         elif self.fuente.token == '>':
             #distinto
-            return self.clasificaToken('distinto')
+            return self.return2estado1('distinto',False)
         else:
             return self.return2estado1("menor",True)
     
