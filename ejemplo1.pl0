@@ -1,5 +1,5 @@
-const m = 7, otro = 85;
-var x, y, z, q, r;
+const m = 7, n = 85;
+var x, y, z, q, r, z;
 
 procedure multiply;
   var a,b;
